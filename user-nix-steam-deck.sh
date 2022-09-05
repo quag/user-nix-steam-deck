@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export N=/dev/shm/nix     # temp install to RAM
-#export N=$HOME/nix  # real install to ~/nix
+export N=$HOME/nix  # real install to ~/nix
+#export N=/dev/shm/nix     # temp install to RAM
 
 {
 oops() { echo "$0:" "$@" >&2; exit 1; }
