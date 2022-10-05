@@ -52,7 +52,7 @@ Q3. How do I find a program to run?
 Q4. How do I install a program? Add the name of the program to home.nix's home.packages line. For example:
 
   home.packages = (with pkgs; [
-    nixFlakes nettools bashInteractive
+    nix nettools bashInteractive
     ncdu vlc
   ]);
 
@@ -133,7 +133,7 @@ cat <<EOF > $N/home/.config/nixpkgs/home.nix
   home.stateVersion = "22.05";
 
   home.packages = (with pkgs; [
-    nixFlakes nettools bashInteractive
+    nix nettools bashInteractive
     # To find more packages, use:
     #
     #   nix search nixpkgs NAME
