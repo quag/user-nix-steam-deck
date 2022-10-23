@@ -105,6 +105,7 @@ EOF
 cat <<EOF > $N/home/.config/nix/nix.conf
 experimental-features = nix-command flakes
 max-jobs = auto
+auto-optimise-store = true
 EOF
 
 cat <<EOF > $N/home/.config/nixpkgs/flake.nix
