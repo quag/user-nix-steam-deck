@@ -18,9 +18,9 @@ if [ -d $N ]; then
     exec $N/enter
 fi
 
-mkdir $N $N/root-nix $N/home $N/home/.config $N/home/.config/{nix,nixpkgs} || oops "Unable to create directories"
+mkdir $N $N/root-nix $N/home $N/home/.config $N/home/.config/{nix,home-manager} || oops "Unable to create directories"
 ln -s $HOME $N/home/$USER || oops "unable to create $USER symlink"
-ln -s .config/nixpkgs/home.nix $N/home/home.nix || oops "unable to create home.nix symlink"
+ln -s .config/home-manager/home.nix $N/home/home.nix || oops "unable to create home.nix symlink"
 
 title "Downloading nix-user-chroot"
 wget -O $N/nix-user-chroot https://github.com/nix-community/nix-user-chroot/releases/download/1.2.2/nix-user-chroot-bin-1.2.2-x86_64-unknown-linux-musl || oops "Failed to download nix-user-chroot"
@@ -62,8 +62,8 @@ Then rebuild with:
 
 Q5. Where is the home.nix and flake.nix?
 
-  $N/home/.config/nixpkgs/home.nix
-  $N/home/.config/nixpkgs/flake.nix
+  $N/home/.config/home-manager/home.nix
+  $N/home/.config/home-manager/flake.nix
 
 Q6. How do I rebuild after editing home.nix or flake.nix? Run:
 
@@ -72,7 +72,7 @@ Q6. How do I rebuild after editing home.nix or flake.nix? Run:
 Q7. How do I update the programs?
 
   nix registry pin nixpkgs
-  nix flake update ~/.config/nixpkgs
+  nix flake update ~/.config/home-manager
   home-manager switch
 
 Q8. How do I delete programs that are no longer installed?
@@ -108,7 +108,7 @@ max-jobs = auto
 auto-optimise-store = true
 EOF
 
-cat <<EOF > $N/home/.config/nixpkgs/flake.nix
+cat <<EOF > $N/home/.config/home-manager/flake.nix
 {
   inputs = {
     hm.url = "github:nix-community/home-manager";
@@ -124,7 +124,7 @@ cat <<EOF > $N/home/.config/nixpkgs/flake.nix
 }
 EOF
 
-cat <<EOF > $N/home/.config/nixpkgs/home.nix
+cat <<EOF > $N/home/.config/home-manager/home.nix
 # After editing this file, run:
 #
 #   home-manager switch
@@ -180,10 +180,10 @@ nix registry pin nixpkgs || oops "failed to: nix registry pin nixpkgs"
 
 title "Building home-manager configuration"
 nix-env --set-flag priority 10 nix || oops "failed to: nix-env --set-flag priority 10 nix"
-nix build --no-link ~/.config/nixpkgs/flake.nix#homeConfigurations.$USER.activationPackage || oops "failed to build ~/.config/nixpkgs/flake.nix#homeConfigurations.$USER.activationPackage"
+nix build --no-link ~/.config/home-manager/flake.nix#homeConfigurations.$USER.activationPackage || oops "failed to build ~/.config/home-manager/flake.nix#homeConfigurations.$USER.activationPackage"
 
 title "Activating home-manager configuration"
-"\$(nix path-info ~/.config/nixpkgs/flake.nix#homeConfigurations.$USER.activationPackage)"/activate || oops "failed to activate home-manager config"
+"\$(nix path-info ~/.config/home-manager/flake.nix#homeConfigurations.$USER.activationPackage)"/activate || oops "failed to activate home-manager config"
 
 title "Removing nix-env's nix command"
 nix-env -e nix || oops "failed to remove nix-env's version of the nix command"
